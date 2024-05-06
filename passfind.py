@@ -146,10 +146,11 @@ if passfind_start == 1:
                 counter = 0
                 try:
                         for passwords in range(0, len(todos['result'])):
-                                print(Fore.BLUE + "\n[", Fore.YELLOW + str(passwords + 1), Fore.BLUE + "]", sep="", end=" ")
-                                print(Fore.BLUE + "     password:", Fore.WHITE + todos['result'][passwords]['password'])
-                                print(Fore.RED + "        hash:", Fore.WHITE + todos['result'][passwords]['hash'])
-                                print(Fore.YELLOW + "        sources:", Fore.WHITE, todos['result'][passwords]['sources'], Style.RESET_ALL)
+                                if "password" in todos['result'][passwords]:
+                                        print(Fore.BLUE + "\n[", Fore.YELLOW + str(passwords + 1), Fore.BLUE + "]", sep="", end=" ")
+                                        print(Fore.BLUE + "     password:", Fore.WHITE + todos['result'][passwords]['password'])
+                                        print(Fore.RED + "        hash:", Fore.WHITE + todos['result'][passwords]['hash'])
+                                        print(Fore.YELLOW + "        sources:", Fore.WHITE, todos['result'][passwords]['sources'], Style.RESET_ALL)
 
 
                         print("\n\nFetching uncensored passwords...")
@@ -157,19 +158,20 @@ if passfind_start == 1:
                         if func == ("auto"):
                                 todos = json.loads(response.text)
                                 for a in range(0, len(todos['result'])):
-                                        hash_list = []
-                                        hash = (todos['result'][a]['hash'])
-                                        querystring = {"func":"dehash","term":hash}
-                                        headers = {
-                                                'x-rapidapi-host': "breachdirectory.p.rapidapi.com",
-                                                'x-rapidapi-key': API_KEY
-                                                }
-                                        response = requests.request("GET", url, headers=headers, params=querystring)
-                                        #print(response.text)
-                                        todos1 = json.loads(response.text)
-                                        time.sleep(2)
-                                        print(Fore.BLUE + "\n[", Fore.YELLOW + str(a + 1), Fore.BLUE + "]", Style.RESET_ALL, sep="", end=" ")
-                                        print(todos1['found'])
+                                        if "hash" in todos['result'][a]:
+                                                hash_list = []
+                                                hash = (todos['result'][a]['hash'])
+                                                querystring = {"func":"dehash","term":hash}
+                                                headers = {
+                                                        'x-rapidapi-host': "breachdirectory.p.rapidapi.com",
+                                                        'x-rapidapi-key': API_KEY
+                                                        }
+                                                response = requests.request("GET", url, headers=headers, params=querystring)
+                                                #print(response.text)
+                                                todos1 = json.loads(response.text)
+                                                time.sleep(2)
+                                                print(Fore.BLUE + "\n[", Fore.YELLOW + str(a + 1), Fore.BLUE + "]", Style.RESET_ALL, sep="", end=" ")
+                                                print(todos1['found'])
                 except KeyError:
                         print (Fore.RED + "\n\nNO RESULTS!" + Style.RESET_ALL)
 if passcrack_start == 1:
